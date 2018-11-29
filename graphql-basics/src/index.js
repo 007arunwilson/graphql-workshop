@@ -1,1 +1,1 @@
-console.log("Welcome to Graphql");
+console.log("GraphQl with yoga");
