@@ -17,7 +17,7 @@ const typeDefs = `
 const resolvers = {
   Query: {
     title: () => "Nokia 7.1 Plus (Nokia X7)",
-    price: () => 12000,
+    price: () => 11000,
     releaseYear: () => 2018,
     rating: () => null,
     inStock: () => true
