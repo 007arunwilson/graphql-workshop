@@ -2,6 +2,15 @@ import { GraphQLServer } from "graphql-yoga";
 
 //GraphQl DataTypes: String!,Boolean!,Int!,Float!,ID
 
+const usersData = [
+  {
+    id: 1,
+    name: "Arun Wilson",
+    email: "007arunwilson@gmail.com",
+    age: 27
+  }
+];
+
 //Type Definitions
 const typeDefs = `
     type Query {
@@ -10,7 +19,7 @@ const typeDefs = `
         greeting(name: String,prefix: String):String!
         add(a:Float!,b:Float!):Float!
         addMultiple(numbers:[Float!]!):Float!
-        getUsers:[User!]!
+        getUsers:[User]!
     }
     type User {
         id: ID!
@@ -30,7 +39,7 @@ const typeDefs = `
 const resolvers = {
   Query: {
     getUsers: () => {
-      return [];
+      return usersData;
     },
     add: (parent, args, ctx, info) => (args.a + args.b).toFixed(4),
     greeting: (parent, args, ctx, info) => {
