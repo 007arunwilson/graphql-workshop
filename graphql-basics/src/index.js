@@ -1,6 +1,9 @@
 import { GraphQLServer } from "graphql-yoga";
+import posts from "./data";
 
-//GraphQl DataTypes: String!,Boolean!,Int!,Float!,ID
+//GraphQl DataTypes: String!,Boolean!,Int!,Float!,ID4
+
+//Posts with id title body published
 
 const usersData = [
   {
@@ -8,6 +11,24 @@ const usersData = [
     name: "Arun Wilson",
     email: "007arunwilson@gmail.com",
     age: 27
+  },
+  {
+    id: 2,
+    name: "Paulson Paul",
+    email: "paulsonuv@gmail.com",
+    age: 22
+  },
+  {
+    id: 3,
+    name: "Madison Madi",
+    email: "madisonuv@gmail.com",
+    age: 28
+  },
+  {
+    id: 4,
+    name: "Ravi John",
+    email: "ravijohn@gmail.com",
+    age: 28
   }
 ];
 
@@ -15,11 +36,12 @@ const usersData = [
 const typeDefs = `
     type Query {
         me: User!
-        post:Post!
+        post(id:Int!):Post
         greeting(name: String,prefix: String):String!
         add(a:Float!,b:Float!):Float!
         addMultiple(numbers:[Float!]!):Float!
-        getUsers:[User]!
+        getUsers(query:String):[User!]!
+        getPosts(query:String):[Post!]!
     }
     type User {
         id: ID!
@@ -31,15 +53,34 @@ const typeDefs = `
         id:ID!
         title:String!
         body:String!
-        published:Boolean!
+        userId:Int!
     }
 `;
 
 //Resolvers
 const resolvers = {
   Query: {
-    getUsers: () => {
-      return usersData;
+    getPosts: (parent, args, ctx, info) => {
+      let returnData = posts;
+      if (args.query) {
+        returnData = posts.filter(
+          postItem =>
+            postItem.title.toLowerCase().includes(args.query) ||
+            postItem.body.toLowerCase().includes(args.query)
+        );
+      }
+      return returnData;
+    },
+    getUsers: (parent, args, ctx, info) => {
+      let returnData = usersData;
+
+      if (args.query) {
+        returnData = usersData.filter(filterItem =>
+          filterItem.name.toLowerCase().includes(args.query)
+        );
+      }
+
+      return returnData;
     },
     add: (parent, args, ctx, info) => (args.a + args.b).toFixed(4),
     greeting: (parent, args, ctx, info) => {
@@ -66,13 +107,8 @@ const resolvers = {
 
       return returnValue;
     },
-    post: () => ({
-      id: "122",
-      title:
-        "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-      body:
-        "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-    })
+    post: (parent, args, ctx, info) =>
+      posts.filter(postItem => postItem.id === args.id)[0]
   }
 };
 
